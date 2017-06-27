@@ -11,11 +11,14 @@ class Screen
 public:
     typedef std::string::size_type pos;
     Screen() = default;
-    Screen(pos ht, pos wd)
-        : height(ht), width(wd), contents(ht*wd, ' ')
-        { }
     Screen(pos ht, pos wd, char c)
         : height(ht), width(wd), contents(ht*wd, c)
+        { }
+    // Screen(pos ht, pos wd)
+    //     : height(ht), width(wd), contents(ht*wd, ' ')
+    //     { }
+    Screen(pos ht, pos wd)
+        : Screen(ht, wd, ' ')
         { }
     char get() const
         { return contents[cursor]; }
