@@ -19,7 +19,7 @@ int main()
         curr != fli.cend(); )
         {
             if( *curr % 2 ){     // odd value
-            // erase the curr, assign curr to the next elem
+            // erase curr, assign iterator to the next elem to curr
                 curr = fli.erase_after(prev);   
             }
             else{

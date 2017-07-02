@@ -10,6 +10,9 @@
         "xiosbase": "cpp",
         "list": "cpp",
         "forward_list": "cpp",
-        "deque": "cpp"
+        "deque": "cpp",
+        "sstream": "cpp",
+        "type_traits": "cpp",
+        "ostream": "cpp"
     }
 }

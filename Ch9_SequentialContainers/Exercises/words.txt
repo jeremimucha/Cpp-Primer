@@ -1,0 +1,2 @@
+this is a file with some words for testing the ex9.49.cpp
+It searches for the longest word without ascenders or descenders.
