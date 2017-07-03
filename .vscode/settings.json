@@ -13,6 +13,7 @@
         "deque": "cpp",
         "sstream": "cpp",
         "type_traits": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "iterator": "cpp"
     }
 }
