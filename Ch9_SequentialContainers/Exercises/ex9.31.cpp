@@ -27,7 +27,7 @@ int main()
         if( *it % 2 ){
             // inserts *it before it, returns iterator to the inserted element
             it = vi.insert(it, *it);
-            it += 2;
+            it += 2;    // skip over inserted and original element
         }
         else{
             // erases elem pointed to by it, returns iterator to the elem after it
@@ -64,11 +64,13 @@ int main()
         {
             if( *curr % 2 ){
                 curr = fli.insert_after(curr, *curr);
-                ++curr;
-                ++prev; ++prev;
+                ++curr; // skip over the inserted element
+                ++prev; ++prev; // skip to the inserted element (i.e. the one before curr)
             }
             else{
                 curr = fli.erase_after(prev);
+                // curr is effectively iterated to the next elem
+                // prev still points to the elem before curr
             }
         }
     cout << "\nforward_list after modification: ";
