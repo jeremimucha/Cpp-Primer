@@ -8,6 +8,7 @@ Exercise 11.11: Redefine  bookstore without using  decltype .*/
 #include <vector>
 #include <list>
 #include <map>
+#include <set>
 #include <utility>
 #include <functional>
 using std::cout;
@@ -32,7 +33,7 @@ private:
 };
 
 
-bool compareIbn(const SalesData& lhs, const SalesData& rhs)
+bool compareIsbn(const SalesData& lhs, const SalesData& rhs)
 {
     return lhs.isbn() < rhs.isbn();
 }
@@ -89,4 +90,12 @@ int main()
              << "\n\tmapped to: " << a.second
              << std::endl;
     }
+
+// ex 11.11
+    std::multiset<SalesData, bool(*)(const SalesData&, const SalesData&)>
+        bookstore(compareIsbn);
+    std::multiset<SalesData, decltype(compareIsbn)*>
+        bookstore2(compareIsbn);
+    std::multiset<SalesData, function<bool(const SalesData&,const SalesData&)>>
+        bookstore3(compareIsbn);
 }
