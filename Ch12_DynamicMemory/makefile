@@ -2,16 +2,16 @@ CFLAGS = -O2 -Wall -Wextra -pedantic -std=c++11 -IC:/msys64/mingw64/include -LC:
 CXX = g++
 
 
-SRC = $(wildcard *.cpp)
-BINS = $(patsubst %.cpp, %.exe, $(SRC))
-OBJ = $(patsubst %.cpp, %.o, $(BINS))
-DEPS = 
+SRC = strblob_test.cpp
+BINS = strblob_test.exe
+OBJ = 
+DEPS = strblob.h
 
 
 all: $(BINS)
 
 
-%.exe: %.cpp $(DEPS)
+strblob_test.exe: strblob_test.cpp $(DEPS)
 	$(CXX) -o $@ $^ $(CFLAGS)
 
 
