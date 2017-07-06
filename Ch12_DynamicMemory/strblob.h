@@ -10,27 +10,38 @@
 #include <memory>
 #include <stdexcept>
 
+class StrBlobPtr;
 
 class StrBlob
 {
 public:
+    friend class StrBlobPtr;
     typedef std::vector<std::string>::size_type size_type;
+
     StrBlob();
     StrBlob(std::initializer_list<std::string> il);
+    ~StrBlob() { std::cout << "--> ~StrBlob(): data = 0x"
+                 << reinterpret_cast<void*>(data.get()) << ", use_count = "
+                 << data.use_count() << "\n"; }
+    
     bool empty() const
         { return data->empty(); }
+    
     // add and remove elements
     void push_back(const std::string& t)
         {data->push_back(t);}
     void pop_back();
+    
     // element access
     std::string& front();
     const std::string& front() const;
     std::string& back();
     const std::string& back() const;
-    ~StrBlob() { std::cout << "--> ~StrBlob(): data = 0x"
-                 << reinterpret_cast<void*>(data.get()) << ", use_count = "
-                 << data.use_count() << "\n"; }
+    
+    // return StrBlobPtr to the first and one past the last elements
+    StrBlobPtr begin();
+    StrBlobPtr end();
+
 private:
     std::shared_ptr<std::vector<std::string>> data;
     // throws msg if data[i] isn't valid

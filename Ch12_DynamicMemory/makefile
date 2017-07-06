@@ -2,16 +2,20 @@ CFLAGS = -O2 -Wall -Wextra -pedantic -std=c++11 -IC:/msys64/mingw64/include -LC:
 CXX = g++
 
 
-SRC = strblob_test.cpp
-BINS = strblob_test.exe
+SRC = strblob_test.cpp ex12.20.cpp
+BINS = strblob_test.exe ex12.20.exe
 OBJ = 
-DEPS = strblob.h
+DEPS = strblob.h strblobptr.h
 
 
 all: $(BINS)
 
 
 strblob_test.exe: strblob_test.cpp $(DEPS)
+	$(CXX) -o $@ $^ $(CFLAGS)
+
+
+ex12.20.exe: ex12.20.cpp $(DEPS)
 	$(CXX) -o $@ $^ $(CFLAGS)
 
 
