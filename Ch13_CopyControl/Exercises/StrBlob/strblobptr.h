@@ -21,17 +21,10 @@ public:
 
     std::string& deref() const;
     StrBlobPtr& incr(); // prefix version
-<<<<<<< HEAD
-    bool operator==(const StrBlobPtr& rhs)
-        { return curr == rhs.curr; }
-    bool operator!=(const StrBlobPtr& rhs)
-        { return curr != rhs.curr; }
-=======
     bool operator==(const StrBlobPtr& rhs) const
         { return curr == rhs.curr; }
     bool operator!=(const StrBlobPtr& rhs) const
         { return !(*this == rhs); }
->>>>>>> 542e774ef888abf418964a6997031e98a15bf5f6
 private:
 // check returns a shared_ptr to the vector if check succeeds
     std::shared_ptr<std::vector<std::string>>
