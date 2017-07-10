@@ -1,6 +1,6 @@
-// strblobptr.h -- StrBlobPtr companion pointer class for the StrBlob class
-#ifndef STRBLOBPTR_H_
-#define STRBLOBPTR_H_
+// ConstStrBlobPtr - pointer class to a const StrBlob
+#ifndef CONSTSTRBLOBPTR_H_
+#define CONSTSTRBLOBPTR_H_
 
 #include <iostream>
 #include <vector>
@@ -10,37 +10,35 @@
 #include "strblob.h"
 
 
-// StrBlobPtr throws an exception on attempts to access a nonexistent element
-class StrBlobPtr
+class ConstStrBlobPtr
 {
 public:
-    StrBlobPtr()
+    ConstStrBlobPtr()
         : curr(0) { }
-    StrBlobPtr(StrBlob& a, size_t sz=0)
+    ConstStrBlobPtr(const StrBlob& a, size_t sz=0)
         : wptr(a.data), curr(sz) { }
 
-    std::string& deref() const;
-    StrBlobPtr& incr(); // prefix version
-    bool operator==(const StrBlobPtr& rhs)
+    const std::string& deref() const;   // dereference as const
+    ConstStrBlobPtr& incr(); // prefix version
+    bool operator==(const ConstStrBlobPtr& rhs)
         { return curr == rhs.curr; }
-    bool operator!=(const StrBlobPtr& rhs)
+    bool operator!=(const ConstStrBlobPtr& rhs)
         { return curr != rhs.curr; }
 private:
 // check returns a shared_ptr to the vector if check succeeds
     std::shared_ptr<std::vector<std::string>>
         check(std::size_t, const std::string&) const;
 
-    std::weak_ptr<std::vector<std::string>> wptr;
+    std::weak_ptr<std::vector<std::string>> wptr;     // constant reference;
     std::size_t curr;       // current position within the array
 };
 
-
 inline std::shared_ptr<std::vector<std::string>>
-StrBlobPtr::check(std::size_t i, const std::string& msg) const
+ConstStrBlobPtr::check(std::size_t i, const std::string& msg) const
 {
     std::shared_ptr<std::vector<std::string>> ret = wptr.lock();
     if( !ret )
-        throw std::runtime_error("unbount StrBlobPtr");
+        throw std::runtime_error("unbount ConstStrBlobPtr");
     if( i >= ret->size() )
         throw std::out_of_range(msg);
     
@@ -48,14 +46,14 @@ StrBlobPtr::check(std::size_t i, const std::string& msg) const
 }
 
 
-inline std::string& StrBlobPtr::deref() const
+inline const std::string& ConstStrBlobPtr::deref() const
 {
     std::shared_ptr<std::vector<std::string>> p = check(curr, "dereference past end");
     return (*p)[curr];
 }
 
 // prefix: return a reference to the incremented object
-inline StrBlobPtr& StrBlobPtr::incr()
+inline ConstStrBlobPtr& ConstStrBlobPtr::incr()
 {
     // if curr already points past the end of the container can't increment it
     check(curr, "increment past end of StrBlobPtr");
@@ -63,9 +61,10 @@ inline StrBlobPtr& StrBlobPtr::incr()
     return *this;
 }
 
-inline StrBlobPtr StrBlob::begin()
-    { return StrBlobPtr(*this); }
-inline StrBlobPtr StrBlob::end()
-    { return StrBlobPtr(*this, data->size()); }
+inline ConstStrBlobPtr StrBlob::cbegin() const
+    { return ConstStrBlobPtr(*this); }
+inline ConstStrBlobPtr StrBlob::cend() const
+    { return ConstStrBlobPtr(*this, data->size()); }
 
-#endif /*STRBLOBPTR_H_*/
+
+#endif /*CONSTSTRBLOBPTR_H_*/

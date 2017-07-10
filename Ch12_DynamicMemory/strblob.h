@@ -11,11 +11,14 @@
 #include <stdexcept>
 
 class StrBlobPtr;
+class ConstStrBlobPtr;
+
 
 class StrBlob
 {
 public:
     friend class StrBlobPtr;
+    friend class ConstStrBlobPtr;
     typedef std::vector<std::string>::size_type size_type;
 
     StrBlob();
@@ -41,6 +44,8 @@ public:
     // return StrBlobPtr to the first and one past the last elements
     StrBlobPtr begin();
     StrBlobPtr end();
+    ConstStrBlobPtr cbegin() const;
+    ConstStrBlobPtr cend() const;
 
 private:
     std::shared_ptr<std::vector<std::string>> data;
