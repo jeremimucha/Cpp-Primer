@@ -24,8 +24,21 @@ int main()
     
 
     families["Lastname3"] = vector<string>({"Some", "More", "Kids", "Names"});
-    families.insert(std::make_pair("Lastname4",
-            vector<string>({"Fourth", "Family", "Last", "Names"})));
+    pair<map<string,vector<string>>::iterator, bool> insres = 
+                        families.insert(std::make_pair("Lastname4",
+                        vector<string>({"Fourth", "Family", "Last", "Names"})));
+
+    if(insres.second){
+        cout << "family 'Lastname4' succesfuly inserted.\n";
+    }
+    else{
+        cout << "family 'Lastname4 already present in the map.\n";
+    }
+    cout << "'Lastname4' family's kids: ";
+    for( vector<string>::const_iterator it=insres.first->second.cbegin();
+         it != insres.first->second.cend(); )
+         cout << *it++ << ", ";
+    cout << std::endl;
 
     for( const pair<string, vector<string>>& f : families){
         cout << "Family last name: " << f.first

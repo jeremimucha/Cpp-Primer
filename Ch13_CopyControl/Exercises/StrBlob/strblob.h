@@ -22,10 +22,16 @@ public:
 
     StrBlob();
     StrBlob(std::initializer_list<std::string> il);
-    ~StrBlob() { std::cout << "--> ~StrBlob(): data = 0x"
-                 << reinterpret_cast<void*>(data.get()) << ", use_count = "
-                 << data.use_count() << "\n"; }
+    StrBlob(const StrBlob& sb);
+    ~StrBlob()
+        { 
+            std::cout << "--> ~StrBlob(): data = "
+                      << reinterpret_cast<void*>(data.get()) << ", use_count = "
+                      << data.use_count() << "\n";
+        }
     
+    StrBlob& operator=(const StrBlob& rhs);
+
     bool empty() const
         { return data->empty(); }
     
@@ -53,15 +59,44 @@ private:
 
 inline StrBlob::StrBlob()
     : data(std::make_shared<std::vector<std::string>>())
-    { std::cout << "--> StrBlob(): data = 0x"
-        << reinterpret_cast<void*>(data.get()) 
-        << " use_count = " <<data.use_count() << "\n"; }
+{ 
+    std::cout << "--> StrBlob(): data = "
+              << reinterpret_cast<void*>(data.get()) 
+              << " use_count = " <<data.use_count() << "\n";
+}
 
 inline StrBlob::StrBlob(std::initializer_list<std::string> il)
     : data(std::make_shared<std::vector<std::string>>(il))
-    { std::cout << "--> StrBlob(initializer_list<string>): data = 0x"
-                << reinterpret_cast<void*>(data.get()) 
-                << " use_count = " << data.use_count() << "\n"; }
+{ 
+    std::cout << "--> StrBlob(initializer_list<string>): data = "
+              << reinterpret_cast<void*>(data.get()) 
+              << " use_count = " << data.use_count() << "\n";
+}
+
+inline StrBlob::StrBlob(const StrBlob& sb)
+    : data(std::make_shared<std::vector<std::string>>(*sb.data))
+{
+    std::cout << "--> StrBlob(const StrBlob& sb): data = "
+              << reinterpret_cast<void*>(data.get())
+              << " use_count = " << data.use_count() << "\n";
+}
+
+inline StrBlob& StrBlob::operator=(const StrBlob& rhs)
+{
+    if(this == &rhs)
+        return *this;
+    // *data = *rhs.data();
+
+    // return *this;
+// or
+    std::shared_ptr<std::vector<std::string>> tempdata =
+        std::make_shared<std::vector<std::string>>(*rhs.data);
+    data = std::move(tempdata);
+    std::cout << "--> StrBlob::operator=(const StrBlob& rhs): data = "
+              << reinterpret_cast<void*>(data.get())
+              << "use_count = " << data.use_count() << "\n";
+    return *this;
+}
 
 inline void StrBlob::check(size_type i, const std::string& msg) const
 {
