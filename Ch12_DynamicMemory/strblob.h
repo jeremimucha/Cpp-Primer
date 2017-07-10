@@ -12,10 +12,6 @@
 
 class StrBlobPtr;
 class ConstStrBlobPtr;
-<<<<<<< HEAD
-
-=======
->>>>>>> 542e774ef888abf418964a6997031e98a15bf5f6
 
 class StrBlob
 {
@@ -49,10 +45,6 @@ public:
     StrBlobPtr end();
     ConstStrBlobPtr cbegin() const;
     ConstStrBlobPtr cend() const;
-<<<<<<< HEAD
-
-=======
->>>>>>> 542e774ef888abf418964a6997031e98a15bf5f6
 private:
     std::shared_ptr<std::vector<std::string>> data;
     // throws msg if data[i] isn't valid

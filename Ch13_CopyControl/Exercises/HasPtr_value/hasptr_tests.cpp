@@ -1,9 +1,10 @@
 // minimal test code for the value-like HasPtr class
+#include "hasptr_val.h"
 #include <iostream>
 #include <utility>
 #include <algorithm>
 #include <vector>
-#include "hasptr_val.h"
+
 using std::cout;
 using std::endl;
 using std::vector;

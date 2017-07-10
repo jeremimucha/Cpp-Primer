@@ -7,6 +7,7 @@
 class HasPtr
 {
 public:
+friend void swap(HasPtr&, HasPtr&) noexcept;
     HasPtr(const std::string& s=std::string())
         : ps(new std::string(s)), i(0)
         { info("HasPtr(const string&)", ps, i); }
@@ -15,6 +16,8 @@ public:
         { info("HasPtr(const HasPtr&)", ps, i); }
     ~HasPtr() { info("--> ~HasPtr()", ps, i); delete ps; }
     HasPtr& operator=(const HasPtr& p);
+    // bool operator<(HasPtr& rhs)
+    //     { return &ps < *rhs.ps; }
     bool operator<(const HasPtr& rhs) const
         { return *ps < *rhs.ps; }
     void swap(HasPtr& rhs)
@@ -23,7 +26,7 @@ public:
             swap(ps, rhs.ps);
             swap(i, rhs.i);
         }
-friend void swap(HasPtr&, HasPtr&) noexcept;
+
 friend std::ostream& operator<<(std::ostream& os, const HasPtr& hp);
 private:
     std::string* ps;
