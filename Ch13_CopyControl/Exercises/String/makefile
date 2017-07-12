@@ -2,16 +2,16 @@ CFLAGS = -O2 -Wall -Wextra -pedantic -std=c++11 -IC:/msys64/mingw64/include -LC:
 CXX = g++
 
 
-SRC = hasptr_tests.cpp hasptr_val.cpp
-BINS = hasptr_tests.exe
+SRC = String_tests.cpp String.cpp
+BINS = String_tests.exe
 OBJ = 
-DEPS = hasptr_val.h
+DEPS = String.h
 
 
 all: $(BINS)
 
 
-hasptr_tests.exe: $(SRC) $(DEPS)
+String_tests.exe: $(SRC) $(DEPS)
 	$(CXX) -o $@ $^ $(CFLAGS)
 
 
