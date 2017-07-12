@@ -2,7 +2,7 @@
 #include <utility>
 #include <vector>
 #include "String.h"
-
+using std::cout;
 
 void info(const String& s, const char*);
 
@@ -25,6 +25,12 @@ int main()
     info(s2, "s2: ");
     info(s3, "s3: ");
     info(s4, "s4: ");
+
+    cout << "\n\nex13.48:\n";
+    std::vector<String> vs;
+    vs.push_back("foo");
+    vs.push_back("bar");
+    vs.push_back("42");
 }
 
 

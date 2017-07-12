@@ -1,4 +1,7 @@
 #include "strvec.h"
+#include <iterator>
+using std::make_move_iterator;
+using std::move_iterator;
 
 
 StrVec& StrVec::operator=(const StrVec& rhs)
@@ -11,21 +14,40 @@ StrVec& StrVec::operator=(const StrVec& rhs)
     return *this;
 }
 
+// void StrVec::reallocate()
+// {
+//     // we'll allocate space for twice as many elements as the current size
+//     std::size_t newcapacity = size() ? 2*size() : 1;
+//     // allocate new memory
+//     std::string* newdata = alloc.allocate(newcapacity);
+//     // move the data from the old memory to the new
+//     std::string* dest = newdata;    // points to the next free position in the new array
+//     std::string* elem = elements;   // points to the next element in the old array
+//     for(std::size_t i=0; i!=size(); ++i)
+//         alloc.construct(dest++, std::move(*elem++));
+//     free(); // free the old space once we've moved the elements
+//     // update our data structure to point to the new elements
+//     elements = newdata;
+//     first_free = dest;
+//     cap = elements + newcapacity;
+// }
+
+// reallocate variant using the move_iterator adaptor
 void StrVec::reallocate()
 {
-    // we'll allocate space for twice as many elements as the current size
+    // allocaet space for twice as many elements as te current size
     std::size_t newcapacity = size() ? 2*size() : 1;
-    // allocate new memory
-    std::string* newdata = alloc.allocate(newcapacity);
-    // move the data from the old memory to the new
-    std::string* dest = newdata;    // points to the next free position in the new array
-    std::string* elem = elements;   // points to the next element in the old array
-    for(std::size_t i=0; i!=size(); ++i)
-        alloc.construct(dest++, std::move(*elem++));
-    free(); // free the old space once we've moved the elements
-    // update our data structure to point to the new elements
-    elements = newdata;
-    first_free = dest;
+    std::string* first = alloc.allocate(newcapacity);
+    // move the elements
+    // std::string* last = std::uninitialized_copy(move_iterator<std::string&>(begin())
+    //                                            ,move_iterator<std::string&>(end())
+    //                                            ,first);
+    std::string* last = uninitialized_copy(make_move_iterator(begin())
+                                          ,make_move_iterator(end())
+                                          ,first);
+    free();             // free the old space
+    elements = first;   // update the pointers
+    first_free = last;
     cap = elements + newcapacity;
 }
 

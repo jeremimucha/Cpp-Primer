@@ -57,6 +57,7 @@ String::String(unsigned int n, char c)
     , cap(elements+n)
 {
     alloc.construct(first_free,'\0');
+    std::cout << "String(unsigned int, char)\n";
 }
 
 String::String(const char* cstr)
@@ -66,6 +67,7 @@ String::String(const char* cstr)
     first_free = std::uninitialized_copy(cstr, cstr+len, elements);
     alloc.construct(first_free, '\0');
     cap = elements + len;
+    std::cout << "String(const char*)\n";
 }
 
 String::String(const char* b, const char* e)
@@ -73,6 +75,7 @@ String::String(const char* b, const char* e)
     std::pair<char*,char*> data = alloc_n_copy(b, e);
     elements = data.first;
     cap = first_free = data.second;
+    std::cout << "String(const char*, const char*)\n";
 }
 
 String::String(const String& rhs)
@@ -80,6 +83,7 @@ String::String(const String& rhs)
     std::pair<char*,char*> data = alloc_n_copy(rhs.cbegin(), rhs.cend());
     elements = data.first;
     cap = first_free = data.second;
+    std::cout << "String(const String&)\n";
 }
 
 String& String::operator=(const String& rhs)
@@ -88,6 +92,7 @@ String& String::operator=(const String& rhs)
     free();
     elements = data.first;
     cap = first_free = data.second;
+    std::cout << "String::operator=(const String&)\n";
     return *this;
 }
 

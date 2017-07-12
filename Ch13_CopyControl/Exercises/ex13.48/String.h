@@ -25,7 +25,7 @@ public:
 /* ------------------------------------------------------------------------- */
     String()
         : elements(nullptr), first_free(nullptr), cap(nullptr)
-        { }
+        { std::cout << "String()\n"; }
     String(unsigned int n, char c);
     String(const char* cstr);
     String(const char* b, const char* e);
@@ -151,6 +151,7 @@ inline void String::shrink(size_type n)
 inline String::~String()
 {
     free();
+    std::cout << "~String()\n";
 }
 
 

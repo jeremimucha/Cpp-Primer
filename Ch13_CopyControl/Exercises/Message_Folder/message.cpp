@@ -16,6 +16,16 @@ void Message::remove_from_Folders()
         f->remMsg(this);        // remove this Message from that Folder
 }
 
+void Message::move_Folders(Message* m)
+    {
+        folders = std::move(m->folders);    // uses set move assignment
+        for( Folder * f : folders ){
+            f->remMsg(m);       // remove the old Message from the Foler
+            f->addMsg(this);    // add this Message to that Folder
+        }
+        m->folders.clear();     // ensure that destroying m is harmless
+    }
+
 
 // copy ctor
 Message::Message(const Message& m)
@@ -24,13 +34,18 @@ Message::Message(const Message& m)
     add_to_Folders(m);  // add this Message to the Folders that point to m
 }
 
+// move ctor
+Message::Message(Message&& m)
+    : contents(std::move(m.contents))
+{
+    move_Folders(&m);
+}
 
 // dtor
 Message::~Message()
 {
     remove_from_Folders();
 }
-
 
 // copy assignment
 Message& Message::operator=(const Message& rhs)
@@ -43,6 +58,15 @@ Message& Message::operator=(const Message& rhs)
     return *this;
 }
 
+Message& Message::operator=(Message&& rhs)
+{
+    if(this != &rhs){
+        remove_from_Folders();
+        contents = std::move(rhs.contents);
+        move_Folders(&rhs);     // reset the pointers to point to this Message
+    }
+    return *this;
+}
 
 void Message::save(Folder& f)
 {
@@ -73,6 +97,8 @@ void swap(Message& lhs, Message& rhs)
     for(Folder* f : rhs.folders)
         f->addMsg(&rhs);
 }
+
+
 
 
 std::ostream& operator<<(std::ostream& os, const Message& m)

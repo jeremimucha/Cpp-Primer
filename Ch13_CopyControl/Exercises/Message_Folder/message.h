@@ -19,6 +19,8 @@ public:
     // copy control to manage pointers to this Message
     Message(const Message&);             // copy ctor
     Message& operator=(const Message&);  // copy assignment
+    Message(Message&&);                  // move ctor
+    Message& operator=(Message&&);       // move assignment
     ~Message();                          // destructor
 
     // add/remove this Message from the specified Folder's set of messages
@@ -42,6 +44,8 @@ private:
     void add_to_Folders(const Message&);
     // remove this Message from every Foldder in folders
     void remove_from_Folders();
+    // move the Folder pointers from m to this Message
+    void move_Folders(Message* m);
 };
 
 

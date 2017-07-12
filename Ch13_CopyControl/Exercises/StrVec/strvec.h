@@ -19,6 +19,14 @@ public:
     StrVec(const StrVec&);              // copy ctor
     StrVec(const std::initializer_list<std::string> il);
     StrVec& operator=(const StrVec&);   // copy assignment
+    StrVec(StrVec&& s) noexcept
+        // member initializers take over the resources in s
+        : elements(s.elements), first_free(s.first_free), cap(s.cap)
+        {
+            // leave s in a state in which it is safe to run the destructor
+            s.elements = s.first_free = s.cap = nullptr;
+        }
+    StrVec& operator=(StrVec&&) noexcept;
     ~StrVec();                          // destructor
     void push_back(const std::string&); // copy the element
     size_t size() const
@@ -97,6 +105,19 @@ inline StrVec::StrVec(const std::initializer_list<std::string> il)
     std::pair<std::string*,std::string*> data = alloc_n_copy(il.begin(), il.end());
     elements = data.first;
     first_free = cap = data.second;
+}
+
+inline StrVec& StrVec::operator=(StrVec&& rhs) noexcept
+{
+    if(this != &rhs){
+        free();                         // free existing elements;
+        elements = rhs.elements;        // take over resources from rhs
+        first_free = rhs.first_free;
+        cap = rhs.cap;
+        // leave rhs in a destructible state
+        rhs.elements = rhs.first_free = rhs.cap = nullptr;
+    }
+    return *this;
 }
 
 inline StrVec::~StrVec()
