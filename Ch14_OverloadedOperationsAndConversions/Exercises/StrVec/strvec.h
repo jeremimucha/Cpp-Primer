@@ -18,7 +18,6 @@ public:
         { }
     StrVec(const StrVec&);              // copy ctor
     StrVec(const std::initializer_list<std::string> il);
-    StrVec& operator=(const StrVec&);   // copy assignment
     StrVec(StrVec&& s) noexcept
         // member initializers take over the resources in s
         : elements(s.elements), first_free(s.first_free), cap(s.cap)
@@ -26,22 +25,31 @@ public:
             // leave s in a state in which it is safe to run the destructor
             s.elements = s.first_free = s.cap = nullptr;
         }
-    StrVec& operator=(StrVec&&) noexcept;
     ~StrVec();                          // destructor
+    StrVec& operator=(const StrVec&);       // copy assignment
+    StrVec& operator=(StrVec&&) noexcept;   // move assignment
+    StrVec& operator=(std::initializer_list<std::string> il);
 
     void push_back(const std::string&); // copy the element
     void push_back(std::string&&);
+    
     size_t size() const
         { return first_free - elements; }
     size_t capacity() const 
         { return cap - elements; }
+    
     void reserve(std::size_t n);
     void resize(std::size_t n, const std::string& s);
+    
     std::string* begin() const
         { return elements; }
     std::string* end() const
         { return first_free; }
-    // ...
+    
+    std::string& operator[](std::size_t n)
+        { return elements[n]; }
+    const std::string& operator[](std::size_t n) const
+        { return elements[n]; }
 
 private:
     std::allocator<std::string> alloc; // allocates the elements

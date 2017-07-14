@@ -47,12 +47,21 @@ public:
     const std::string& front() const;
     std::string& back();
     const std::string& back() const;
+    std::string& operator[](std::size_t n)
+        { return (*data)[n]; }
+    const std::string& operator[](std::size_t n) const
+        { return (*data)[n]; }
     
     // return StrBlobPtr to the first and one past the last elements
     StrBlobPtr begin();
     StrBlobPtr end();
     ConstStrBlobPtr cbegin() const;
     ConstStrBlobPtr cend() const;
+
+friend bool operator==(const StrBlob& lhs, const StrBlob& rhs);
+friend bool operator!=(const StrBlob& lhs, const StrBlob& rhs);
+friend bool operator<(const StrBlob& lhs, const StrBlob& rhs);
+
 private:
     std::shared_ptr<std::vector<std::string>> data;
     // throws msg if data[i] isn't valid
@@ -135,6 +144,29 @@ inline void StrBlob::pop_back()
 {
     check(0, "pop_back on empty StrBlob");
     data->pop_back();
+}
+
+inline
+bool operator==(const StrBlob& lhs, const StrBlob& rhs)
+{
+    return *lhs.data == *rhs.data;
+}
+
+inline
+bool operator!=(const StrBlob& lhs, const StrBlob& rhs)
+{
+    return !(lhs == rhs);
+}
+
+inline
+bool operator<(const StrBlob& lhs, const StrBlob& rhs)
+{
+    std::vector<std::string>::const_iterator pl = lhs.data->cbegin();
+    std::vector<std::string>::const_iterator pr = rhs.data->cbegin();
+    while(pl != lhs.data->cend() && pr != rhs.data->cend() && *pl == *pr){
+        ++pl; ++pr;
+    }
+    return ( (pl==lhs.data->cend() && pr!=rhs.data->cend()) || *pl < *pr);
 }
 
 #endif /*STRBLOB_H_*/

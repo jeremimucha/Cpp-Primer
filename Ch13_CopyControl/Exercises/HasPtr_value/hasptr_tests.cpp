@@ -45,4 +45,6 @@ int main()
     vhp.emplace_back("444");
     vhp.emplace_back("333");
     std::sort(vhp.begin(), vhp.end());
+
+    return 0;
 }

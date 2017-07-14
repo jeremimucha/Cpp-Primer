@@ -30,9 +30,9 @@ public:
     String(const char* cstr);
     String(const char* b, const char* e);
     String(const String&);
-    String(String&&);
+    String(String&&) noexcept;
     String& operator=(const String&);
-    String& operator=(String&&);
+    String& operator=(String&&) noexcept;
     ~String();
 /* ------------------------------------------------------------------------- */
 
@@ -51,34 +51,30 @@ public:
 
 // element access
 /* ------------------------------------------------------------------------- */
-    char& operator[](int n)
+    char& operator[](size_type n) noexcept
         { return elements[n]; }
-    const char& operator[](int n) const
+    const char& operator[](size_type n) const noexcept
         { return elements[n]; }
-    char& back()
+    char& back() noexcept
         { return *(first_free-1); }
-    const char& back() const
+    const char& back() const noexcept
         { return *(first_free-1); }
-    char& front()
+    char& front() noexcept
         { return *elements; }
-    const char& front() const
+    const char& front() const noexcept
         { return *elements; }
-    const char* data() const
-    {
-        return elements;
-    }
-    const char* c_str() const
-    {
-        return data();
-    }
+    const char* data() const noexcept
+        { return elements; }
+    const char* c_str() const noexcept
+        { return data(); }
 
-    char* begin()
+    char* begin() noexcept
         { return elements; }
-    char* end()
+    char* end() noexcept
         { return first_free; }
-    const char* cbegin() const
+    const char* cbegin() const noexcept
         { return elements; }
-    const char* cend() const
+    const char* cend() const noexcept
         { return first_free; }
 /* ------------------------------------------------------------------------- */
 
@@ -96,6 +92,9 @@ public:
 /* ------------------------------------------------------------------------- */
     friend void swap(String& lhs, String& rhs);
     friend std::ostream& operator<<(std::ostream& os, const String& s);
+    friend bool operator==(const String& lhs, const String& rhs);
+    friend bool operator!=(const String& lhs, const String& rhs);
+    friend bool operator<(const String& lhs, const String& rhs);
 /* ------------------------------------------------------------------------- */
 
 
@@ -175,6 +174,33 @@ inline void swap(String& lhs, String& rhs)
 inline std::ostream& operator<<(std::ostream& os, const String& s)
 {
     return os << s.data();
+}
+
+inline
+bool operator==(const String& lhs, const String& rhs)
+{
+    const char* pl=lhs.cbegin();
+    const char* pr=rhs.cbegin();
+    while(pl != lhs.cend() && pr!=rhs.cend())
+        if(*pl++ != *pr++) return false;
+    return *pl == *pr;
+}
+
+inline
+bool operator!=(const String& lhs, const String& rhs)
+{
+    return !(lhs == rhs);
+}
+
+inline
+bool operator<(const String& lhs, const String& rhs)
+{
+    const char* pl = lhs.cbegin();
+    const char* pr = rhs.cbegin();
+    while(pl!=lhs.cend() && rl!=rhs.cend() && *pl == *rl){
+        ++pl; ++rl;
+    }
+    return (pl==lhs.cend() && rl!=rhs.cend() || *pl < *rl);
 }
 
 #endif /*STRING_H_*/

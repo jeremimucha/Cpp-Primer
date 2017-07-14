@@ -14,6 +14,16 @@ void Folder::add_to_Messages(const Folder& f)
         m->folders.insert(this);    // add a pointer to this folder
 }
 
+void Folder::move_Messages(Folder* f)
+{
+    messages = std::move(f->messages);
+    for(Message* m : f->messages){
+        m->folders.erase(f);
+        m->folders.insert(this);
+    }
+    f->messages.clear();
+}
+
 void swap(Folder& lhs, Folder& rhs) noexcept
 {
     using std::swap;
@@ -31,7 +41,7 @@ void swap(Folder& lhs, Folder& rhs) noexcept
 
 std::ostream& operator<<(std::ostream& os, const Folder& f)
 {
-    os << "Messages in folder:\n";
+    os << "Messages in folder " << reinterpret_cast<const void*>(&f) << ":\n";
     for(Message* m : f.messages){
         os << reinterpret_cast<void*>(m) << ":   " << *m;
     }

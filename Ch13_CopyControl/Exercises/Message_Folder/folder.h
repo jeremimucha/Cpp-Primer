@@ -16,8 +16,10 @@ public:
         : messages()
         { }
     Folder(const Folder& f);
+    Folder(Folder&& f);
     ~Folder();
     Folder& operator=(const Folder& f);
+    Folder& operator=(Folder&& f);
 
     std::set<Message*>::iterator addMsg(Message* m)
         { return messages.insert(m).first; }
@@ -32,6 +34,8 @@ private:
 // utility functions used by copy ctor, assignment and dtor
     void remove_from_Messages();
     void add_to_Messages(const Folder&);
+    // move Message Pointers from f to this Folder
+    void move_Messages(Folder* f);
 };
 
 
@@ -39,6 +43,11 @@ inline Folder::Folder(const Folder& f)
     : messages(f.messages)
 {
     add_to_Messages(f);
+}
+
+inline Folder::Folder(Folder&& f)
+{
+    move_Messages(&f);
 }
 
 inline Folder::~Folder()
@@ -52,6 +61,15 @@ inline Folder& Folder::operator=(const Folder& rhs)
     remove_from_Messages();
     messages = rhs.messages;
     add_to_Messages(rhs);
+    return *this;
+}
+
+inline Folder& Folder::operator=(Folder&& f)
+{
+    if(this == &f)
+        return *this;
+    remove_from_Messages();
+    move_Messages(&f);
     return *this;
 }
 

@@ -100,7 +100,7 @@ String& String::operator=(const String& rhs)
 String& String::operator=(String&& rhs) noexcept
 {
     if(this == &rhs)
-        return *this
+        return *this;
     free();
     elements = rhs.elements;
     first_free = rhs.first_free;
