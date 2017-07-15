@@ -12,6 +12,8 @@ report how many words in an input file are of sizes 1 through 10 inclusive.*/
 #include <map>
 #include <algorithm>
 #include <utility>
+#include <iterator>
+#include <numeric>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -19,6 +21,9 @@ using std::string;
 using std::map;
 using std::set;
 using std::pair;
+using std::make_move_iterator;
+using std::back_inserter;
+using std::vector;
 
 
 /* ------------------------------------------------------------------------- */
@@ -134,11 +139,24 @@ int main(int argc, char* argv[])
         ++word_count.insert(std::make_pair(word.size(),0)).first->second;
     }
 
-    for(map<size_t,size_t>::const_iterator it = word_count.cbegin();
-        it != word_count.cend() && (it->first < 11); ++it){
+    vector<pair<size_t,size_t>> lt10;
+    vector<pair<size_t,size_t>> gt10;
+
+    std::partition_copy(make_move_iterator(word_count.begin()),
+                        make_move_iterator(word_count.end()),
+                        back_inserter(lt10), back_inserter(gt10),
+                [](pair<size_t,size_t> p){return p.first < 11;});
+
+    
+    for(vector<pair<size_t,size_t>>::const_iterator it = lt10.cbegin();
+        it != lt10.cend(); ++it){
             cout << "words sized " << it->first << " occur " << it->second
                  << std::endl;
     }
+
+    size_t total_gt10 = std::accumulate(gt10.cbegin(), gt10.cend(), 0,
+        [](int s, const pair<size_t,size_t>& p){return s + p.second;});
+    cout << "words longer than 10 occur " << total_gt10 << " times.\n";
 
     cout << "\nDone.";
 }
