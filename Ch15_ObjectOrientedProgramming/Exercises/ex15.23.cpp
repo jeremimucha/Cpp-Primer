@@ -16,12 +16,13 @@ public:
 class D1 : public Base
 {
 public:
-// virtual override, can be called through Base* or Base&
+// overrides virtual function in base,
+// can be called through Base*, Base&, D1* or D1&
     int fcn() { cout << "D1::fcn()" << endl; return 1; }
 // non-virtual member function, can be called through D1* or D1&
 // but not through Base* or Base&
     int fcn(int i) { cout << "D1::fcn(int)" << endl; return i; }
-// new virtual function that doesn not exist in Base
+// new virtual function that does not exist in Base
 // can be called through D1* and D1&
     virtual void f2() { cout << "D1::f2()" << endl; }
 };

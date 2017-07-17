@@ -33,7 +33,7 @@ class Limited_quote : public Quote
 public:
     Limited_quote() = default;
     Limited_quote(const std::string& book, double sales_price
-        , std::size_t limit, double dsct)
+                 ,std::size_t limit, double dsct)
         : Quote(book, sales_price)
         , max_qty(limit)
         , discount(dsct)
