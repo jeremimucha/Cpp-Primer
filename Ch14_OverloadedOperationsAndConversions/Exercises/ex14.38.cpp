@@ -32,10 +32,10 @@ public:
         , white(ws)
         , sensitive(case_sensitive)
         , trimmode(trim)
-          { }
+        { }
     
     void whitespace(const std::string& ws)
-         { white = ws; }
+        { white = ws; }
     bool is_whitespace(char c)
         { return white.find(c) != std::string::npos; }
     
