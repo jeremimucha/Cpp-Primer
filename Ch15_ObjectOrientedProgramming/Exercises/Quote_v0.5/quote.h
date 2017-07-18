@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <string>
+#include <memory>
+#include <utility>
 
 
 class Quote
@@ -22,6 +24,15 @@ public:
     Quote& operator=(const Quote&) = default;   // copy assign
     Quote& operator=(Quote&&) = default;        // move assign
     virtual ~Quote() = default; // dynamic binding for the dtor
+
+// virtual function to return a dynamically allocated copy of itself
+// these members use reference qualifiers
+    virtual Quote* clone() const &
+        { std::cout << "Quote::clone() const &" << std::endl;
+            return new Quote(*this); }
+    virtual Quote* clone() &&
+        { std::cout << "Quote::clone() &&" << std::endl;
+            return new Quote(std::move(*this)); }
 
     std::string isbn() const
         { return bookNo; }
@@ -84,6 +95,14 @@ public:
     Bulk_quote& operator=(const Bulk_quote&) = default;
     Bulk_quote& operator=(Bulk_quote&&) = default;
 
+// virtual function to return a dynamically allocated copy of itself
+    virtual Bulk_quote* clone() const &
+        { std::cout << "Bulk_quote::clone() const &" << std::endl;
+            return new Bulk_quote(*this); }
+    virtual Bulk_quote* clone() &&
+        { std::cout << "Bulk_quote::clone() &&" << std::endl;
+            return new Bulk_quote(std::move(*this)); }
+
     ~Bulk_quote() = default;
     // overrides the base version in order to implement the bulk purchase discount policy
     virtual double net_price(std::size_t n) const override;
@@ -102,6 +121,14 @@ public:
     Limited_quote(Limited_quote&&) = default;
     Limited_quote& operator=(const Limited_quote&) = default;
     Limited_quote& operator=(Limited_quote&&) = default;
+
+// virtual function to return a dynamically allocated copy of itself
+    virtual Limited_quote* clone() const &
+        { std::cout << "Limited_quote::clone() const &" << std::endl;
+            return new Limited_quote(*this); }
+    virtual Limited_quote* clone() &&
+        { std::cout << "Limited_quote::clone() &&" << std::endl;
+            return new Limited_quote(std::move(*this)); }
 
     ~Limited_quote() = default;
     virtual double net_price(std::size_t n) const override;
