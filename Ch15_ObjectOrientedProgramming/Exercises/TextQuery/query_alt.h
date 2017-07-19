@@ -1,7 +1,13 @@
 // Chapter 15 -- Object oriented programming
-// TextQuery program using object oriented design
-#ifndef QUERY_H_
-#define QUERY_H_
+// Alternate implementation using a shared_ptr<Query_base> members for the
+// NotQuery, BinaryQuery, AndQuery and OrQuery classes
+// Changes include 
+// - changing the operand member types from Query to shared_ptr<Query_base>,
+// - adding a get() member to the Query class. which returns the contained shared_ptr,
+// - changing constructors to call the get() member during initialization.
+// making NotQuery and BinaryQuery friends to the Query_base class
+#ifndef QUERY_ALT_H_
+#define QUERY_ALT_H_
 
 #include <string>
 #include <memory>
@@ -13,6 +19,8 @@
 class Query_base
 {
     friend class Query;
+    friend class NotQuery;
+    friend class BinaryQuery;
 protected:
     using line_no = TextQuery::line_no;     // used in the eval functions
     Query_base()
@@ -44,10 +52,14 @@ public:
     std::string rep() const
         { std::cout << "Query::rep()" << std::endl;
             return q->rep(); }
+    std::shared_ptr<Query_base> get() const
+        { return q; }
 private:
     Query(std::shared_ptr<Query_base> query)
         : q(query)
         { std::cout << "Query(shared_ptr<Query_base>)" << std::endl; }
+
+// ---
     std::shared_ptr<Query_base> q;
 };
 /* ------------------------------------------------------------------------- */
@@ -67,8 +79,9 @@ class WordQuery : public Query_base
     std::string rep() const
         { std::cout << "WordQuery::rep()" << std::endl;
             return query_word; }
-    std::string query_word;     // word for which to search
 
+// ---
+    std::string query_word;     // word for which to search
 };
 /* ------------------------------------------------------------------------- */
 
@@ -86,19 +99,45 @@ Query::Query(const std::string& s)
 
 /* NotQuery */
 /* ------------------------------------------------------------------------- */
+// class NotQuery : public Query_base
+// {
+//     friend Query operator~(const Query&);
+//     NotQuery(const Query& q)
+//         : query(q)
+//         { std::cout << "NotQuery(const Query&)" << std::endl; }
+//     // concrete class: NotQuery defines all inherited pure virtual functions
+//     std::string rep() const
+//         { std::cout << "NotQuery::rep()" << std::endl;
+//             return "~(" + query.rep() + ")"; }
+//     QueryResult eval(const TextQuery&) const;
+    
+// // ---
+//     Query query;
+// };
+
+// inline
+// Query operator~(const Query& operand)
+// {
+//     return std::shared_ptr<Query_base>(new NotQuery(operand));
+// }
+/* ------------------------------------------------------------------------- */
+
+/* NotQuery */
+/* ------------------------------------------------------------------------- */
 class NotQuery : public Query_base
 {
     friend Query operator~(const Query&);
     NotQuery(const Query& q)
-        : query(q)
-        { std::cout << "NotQuery(const Query&)" << std::endl; }
+        : query(q.get())
+        { std::cout << "NotQuery(const Query &q)" << std::endl; }
     // concrete class: NotQuery defines all inherited pure virtual functions
     std::string rep() const
         { std::cout << "NotQuery::rep()" << std::endl;
-            return "~(" + query.rep() + ")"; }
+            return "~(" + query->rep() + ")"; }
     QueryResult eval(const TextQuery&) const;
-    
-    Query query;
+
+// ---
+    std::shared_ptr<Query_base> query;
 };
 
 inline
@@ -108,26 +147,48 @@ Query operator~(const Query& operand)
 }
 /* ------------------------------------------------------------------------- */
 
+/* BinaryQuery */
+/* ------------------------------------------------------------------------- */
+// class BinaryQuery : public Query_base
+// {
+// protected:
+//     BinaryQuery(const Query& l, const Query& r, std::string s)
+//         : lhs(l), rhs(r), opSym(s)
+//         { std::cout << "BinaryQuery(const Query&, const Query&, string&)" 
+//                     << std::endl; }
+
+//     // abstract class: BinaryQuery doesn't define eval
+//     std::string rep() const
+//         { std::cout << "BinaryQuery::rep()" << std::endl;
+//             return "(" + lhs.rep() + " "
+//                      + opSym + " "
+//                      + rhs.rep() + ")"; }
+    
+//     Query lhs, rhs;     // right-and left-hand operands
+//     std::string opSym;  // name of the operator
+// };
+/* ------------------------------------------------------------------------- */
+
 
 /* BinaryQuery */
 /* ------------------------------------------------------------------------- */
 class BinaryQuery : public Query_base
 {
 protected:
-    BinaryQuery(const Query& l, const Query& r, std::string s)
-        : lhs(l), rhs(r), opSym(s)
-        { std::cout << "BinaryQuery(const Query&, const Query&, string&)" 
+    BinaryQuery(const Query& left, const Query& right, std::string s)
+        : lhs(left.get()), rhs(right.get()), opSym(s)
+        { std::cout << "BinaryQuery(const Query&, const Query&, string)"
                     << std::endl; }
 
-    // abstract class: BinaryQuery doesn't define eval
     std::string rep() const
         { std::cout << "BinaryQuery::rep()" << std::endl;
-            return "(" + lhs.rep() + " "
-                     + opSym + " "
-                     + rhs.rep() + ")"; }
+            return "(" + lhs->rep() + " "
+                       + opSym + " "
+                       + rhs->rep() + ")"; }
     
-    Query lhs, rhs;     // right-and left-hand operands
-    std::string opSym;  // name of the operator
+// ---
+    std::shared_ptr<Query_base> lhs, rhs;
+    std::string opSym;
 };
 /* ------------------------------------------------------------------------- */
 
@@ -172,4 +233,4 @@ Query operator|(const Query& lhs, const Query& rhs)
 /* ------------------------------------------------------------------------- */
 
 
-#endif /* QUERY_H_ */
+#endif /* QUERY_ALT_H_ */
