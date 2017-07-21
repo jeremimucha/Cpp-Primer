@@ -18,7 +18,9 @@ public:
         { info("HasPtr(const HasPtr&)", ps, i); }
 
     HasPtr(HasPtr&& rhs) noexcept
-        : ps(rhs.ps), i(rhs.i)
+    // rhs is an lvalue, like any other variable - we need to std::move it to
+    // convert it to a movable rvalue
+        : ps(std::move(rhs.ps)), i(rhs.i)
         {
             info("HasPtr(HasPtr&&)", ps, i);
             rhs.ps = nullptr;
