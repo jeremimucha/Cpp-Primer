@@ -18,7 +18,23 @@ int main()
     std::cout << "compare(a, c) = " << compare(a, c) << std::endl;
     Sales_data sd1("Book 1", 11, 3.14);
     Sales_data sd2("Book 2", 11, 3.14);
-    std::cout << "compare(sd1, sd2) = " << compare(sd1, sd2) << std::endl;
+
+// this will generate a compilation error
+    // std::cout << "compare(sd1, sd2) = " << compare(sd1, sd2) << std::endl;
+// compiler spits this out:
+/* ex16.2.cpp: In instantiation of 'int compare(const T&, const T&) [with T = Sales_data]':
+ex16.2.cpp:21:60:   required from here
+ex16.2.cpp:27:13: error: no match for 'operator<' (operand types are 'const Sales_data' and 'const Sales_data')
+     if( lhs < rhs ) return -1;
+         ~~~~^~~~~
+ex16.2.cpp:27:13: note: candidate: operator<(double, double) <built-in>
+ex16.2.cpp:27:13: note:   no known conversion for argument 2 from 'const Sales_data' to 'double'
+ex16.2.cpp:28:13: error: no match for 'operator<' (operand types are 'const Sales_data' and 'const Sales_data')
+     if( rhs < lhs ) return 1;
+         ~~~~^~~~~
+ex16.2.cpp:28:13: note: candidate: operator<(double, double) <built-in>
+ex16.2.cpp:28:13: note:   no known conversion for argument 2 from 'const Sales_data' to 'double'
+ */
 }
 
 template<typename T>

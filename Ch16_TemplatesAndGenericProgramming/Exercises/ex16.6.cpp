@@ -31,11 +31,11 @@ int main()
 template<typename T, unsigned N>
 constexpr T* mybegin(T(&arr)[N]) noexcept
 {
-    return (&arr[0]);
+    return &arr[0];
 }
 
 template<typename T, unsigned N>
 constexpr T* myend(T(&arr)[N]) noexcept
 {
-    return (&arr[N]);
+    return &arr[N];
 }
