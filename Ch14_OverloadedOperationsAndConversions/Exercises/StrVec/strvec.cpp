@@ -2,7 +2,7 @@
 #include <iterator>
 using std::make_move_iterator;
 using std::move_iterator;
-using std:string;
+using std::string;
 using std::initializer_list;
 using std::pair;
 

@@ -6,6 +6,7 @@
 #include <utility>
 #include <initializer_list>
 #include <algorithm>
+#include <iterator>
 
 
 template<typename T>
@@ -37,7 +38,7 @@ public:
         { return cap - elements; }
 
     void reserve(size_type n);
-    void resize(size_type n, const T&);
+    void resize(size_type n, const T& t=T());
 
     T* begin()
         { return elements; }
@@ -64,7 +65,7 @@ private:
     std::pair<T*, T*> alloc_n_copy(const T*, const T*);
     void free();        // destroy the elements and free the space
     void reallocate();  // get more space and copy the existing elements
-
+// --- member variables
     T* elements;        // pointer to the first element in the array
     T* first_free;      // pointer to the first free element in the array
     T* cap;             // pointer to the one past the end of the array
@@ -93,7 +94,7 @@ inline std::pair<T*,T*> Vec<T>::alloc_n_copy(const T* b,  const T* e)
     T* data = alloc.allocate(e - b);
     // initialize and return a pair constructed from data and
     // the value returned by uninitialized_copy
-    return {data, std::uninitialized_copy(b, e, data); }
+    return {data, std::uninitialized_copy(b, e, data) };
 
 }
 
@@ -109,5 +110,116 @@ inline void Vec<T>::free()
         alloc.deallocate(elements, cap-elements);
     }
 }
+
+template<typename T>
+void Vec<T>::reserve(size_type n)
+{
+    if(n <= capacity() )
+        return;
+    
+    T* first = alloc.allocate(n);
+    T* last = std::uninitialized_copy(std::make_move_iterator(begin())
+                                     ,std::make_move_iterator(end())
+                                     ,first);
+    free();
+    elements = first;
+    first_free = last;
+    cap = elements + n;
+}
+
+template<typename T>
+inline void Vec<T>::reallocate()
+{
+    // allocate space for twice as many elements as the current size
+    size_type newcapacity = size() ? 2*size() : 1;
+    reserve(newcapacity);
+    // T* first = alloc.allocate(newcapacity);
+    // // move the elements using the move_iterator adaptor
+    // T* last = std::uninitialized_copy(std::make_move_iterator(begin())
+    //                                  ,std::make_move_iterator(end())
+    //                                  ,first);
+    // free();     // free the old space
+    // elements = first;
+    // first_free = last;
+    // cap = elements + newcapacity;
+}
+
+template<typename T>
+void Vec<T>::resize(size_type n, const T& t)
+{
+    if(n < size()){
+        for( T* newend = elements + n; first_free != newend; /**/ )
+            alloc.destroy(--first_free);
+        return;
+    }
+
+    if(n > capacity())
+        reserve(n);
+    first_free = std::uninitialized_fill_n(first_free
+                                          ,((elements+n) - first_free)
+                                          ,t);
+}
+
+template<typename T>
+inline Vec<T>::Vec(const Vec<T>& v)
+{
+    // call alloc_n_copy to allocate exactly as many elements as in v
+    std::pair<T*,T*> data = alloc_n_copy(v.cbegin(), v.cend());
+    elements = data.first;
+    first_free = cap = data.second;
+}
+
+template<typename T>
+inline Vec<T>::Vec(const std::initializer_list<T> il)
+{
+    std::pair<T*,T*> data = alloc_n_copy(il.begin(), il.end());
+    elements = data.first;
+    cap = first_free = data.second;
+}
+
+template<typename T>
+Vec<T>& Vec<T>::operator=(const Vec<T>& rhs)
+{
+    if(this == &rhs)
+        return *this;
+    // call alloc_n_copy to allocate exactly as many elements as in rhs
+    std::pair<T*,T*> data = alloc_n_copy(rhs.cbegin(), rhs.cend());
+    free();
+    elements = data.first;
+    cap = first_free = data.second;
+    return *this;
+}
+
+template<typename T>
+inline Vec<T>& Vec<T>::operator=(Vec<T>&& rhs) noexcept
+{
+    if(this != &rhs){
+        free();                 // free existing elements
+        elements = rhs.elements;
+        first_free = rhs.first_free;
+        cap = rhs.cap;
+        // leave rhs in a destructible state
+        rhs.elements = rhs.first_free = rhs.cap = nullptr;
+    }
+    return *this;
+}
+
+template<typename T>
+inline Vec<T>& Vec<T>::operator=(std::initializer_list<T> il)
+{
+    std::pair<T*,T*> data = alloc_n_copy(il.begin(), il.end());
+    free();
+    elements = data.first;
+    cap = first_free = data.second;
+    return *this;
+}
+
+template<typename T>
+inline Vec<T>::~Vec<T>()
+{
+    free();
+}
+
+
 
 #endif /* VEC_H_ */

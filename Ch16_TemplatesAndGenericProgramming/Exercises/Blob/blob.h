@@ -32,6 +32,10 @@ public:
 // constructors
     Blob();
     Blob(std::initializer_list<T> il);
+    template<typename Iter>
+    Blob(Iter b, Iter e)
+        : data(std::make_shared<std::vector<T>>(b, e))
+        { }
     
     // number of elements in the Blob
     size_type size() const
