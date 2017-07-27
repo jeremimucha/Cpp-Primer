@@ -2,7 +2,9 @@
 #define SHAREDPTR_H_
 
 #include <functional>
+#include <utility>
 
+template<typename T> class Sharedptr;
 
 template<typename T>void swap(Sharedptr<T>& lhs, Sharedptr<T>& rhs) noexcept;
 template<typename T>bool operator==(const Sharedptr<T>& lhs, const Sharedptr<T>& rhs) noexcept;
@@ -12,6 +14,7 @@ template<typename T>bool operator<=(const Sharedptr<T>& lhs, const Sharedptr<T>&
 template<typename T>bool operator>(const Sharedptr<T>& lhs, const Sharedptr<T>& rhs) noexcept;
 template<typename T>bool operator>=(const Sharedptr<T>& lhs, const Sharedptr<T>& rhs) noexcept;
 
+
 template<typename T>
 class Sharedptr
 {
@@ -19,21 +22,25 @@ public:
     Sharedptr()
         : p(nullptr), use(nullptr), del(dd)
         { }
-    Sharedptr(T* ptr, std::function<void(T*)> deleter=dd)
+    // explicit Sharedptr(T* ptr)
+    //     : p(ptr), use( new std::size_t(1) ), del(dd)
+    //     { }
+    template< typename Deleter=std::function<void(T*)> >
+    explicit Sharedptr(T* ptr, Deleter deleter = dd)
         : p(ptr), use( new std::size_t(1) ), del(deleter)
         { }
     Sharedptr(const Sharedptr& sp) noexcept
         : p(sp.p), use(sp.use), del(sp.del)
         { if(use) ++*use; }
     Sharedptr(Sharedptr&& sp) noexcept
-        : p(std::move(sp.p)), use(std::move(sp.use), del(std::move(sp.del)))
+        : p(std::move(sp.p)), use(std::move(sp.use)), del(std::move(sp.del))
         { sp.p = nullptr; sp.use = nullptr; sp.del = dd; }
     Sharedptr& operator=(const Sharedptr&);
     Sharedptr& operator=(Sharedptr&&) noexcept;
-
+    ~Sharedptr() noexcept;
     void reset() noexcept;  //
     template<typename Y> void reset(Y* ptr);
-    template<typename Y> void reset(Y* ptr, std::function<void(Y*)> deleter);
+    template<typename Y, typename Deleter> void reset(Y* ptr, Deleter deleter);
 
     T* get() noexcept
         { return p; }
@@ -43,9 +50,9 @@ public:
         { return p; }
     
     std::size_t use_count() const noexcept
-        { return (use ? use : 0); }
+        { return (use ? *use : 0); }
     bool unique() const noexcept
-        { return (use ? (use==1) : 0); }
+        { return (use ? (*use==1) : 0); }
     explicit operator bool() const noexcept
         { return p != nullptr; }
 
@@ -76,6 +83,7 @@ inline Sharedptr<T>& Sharedptr<T>::operator=(const Sharedptr& rhs)
     }
     p = rhs.p;
     use = rhs.use;
+    ++*use;
     del = rhs.del;
     return *this;
 }
@@ -86,15 +94,25 @@ inline Sharedptr<T>& Sharedptr<T>::operator=(Sharedptr&& rhs) noexcept
     if(this == &rhs)
         return *this;
     if(use && --*use == 0){
-        del(p)
+        del(p);
         delete use;
     }
     p = std::move(rhs.p);
     use = std::move(rhs.use);
+    del = std::move(rhs.del);
     rhs.p = nullptr;
     rhs.use = nullptr;
     rhs.del = dd;
     return *this;
+}
+
+template<typename T>
+inline Sharedptr<T>::~Sharedptr() noexcept
+{
+    if(use && --*use == 0){
+        del(p);
+        delete use;
+    }
 }
 
 template<typename T>
@@ -128,12 +146,12 @@ void Sharedptr<T>::reset(Y* ptr)
     }
     p = ptr;
     use = new std::size_t(1);
-    del = dd;
+    // del = dd;
 }
 
 template<typename T>
-template<typename Y>
-void Sharedptr<T>::reset(Y* ptr, std::function<void(Y*)> deleter)
+template<typename Y, typename Deleter>
+void Sharedptr<T>::reset(Y* ptr, Deleter deleter)
 {
     if(use && --*use == 0 ){
         del(p);
@@ -147,39 +165,27 @@ void Sharedptr<T>::reset(Y* ptr, std::function<void(Y*)> deleter)
 
 template<typename T>
 inline bool operator==(const Sharedptr<T>& lhs, const Sharedptr<T>& rhs) noexcept
-{
-    return lhs.p == rhs.p;
-}
+{ return lhs.p == rhs.p; }
 
 template<typename T>
 bool operator!=(const Sharedptr<T>& lhs, const Sharedptr<T>& rhs) noexcept
-{
-    return !(lhs == rhs);
-}
+{ return !(lhs == rhs); }
 
 template<typename T>
 bool operator<(const Sharedptr<T>& lhs, const Sharedptr<T>& rhs) noexcept
-{
-    return std::less<T>(lhs.p, rhs.p);
-}
+{ return std::less<T>(lhs.p, rhs.p); }
 
 template<typename T>
 bool operator<=(const Sharedptr<T>& lhs, const Sharedptr<T>& rhs) noexcept
-{
-    return !(rhs < lhs)
-}
+{ return !(rhs < lhs); }
 
 template<typename T>
 bool operator>(const Sharedptr<T>& lhs, const Sharedptr<T>& rhs) noexcept
-{
-    return rhs < lhs;
-}
+{ return rhs < lhs; }
 
 template<typename T>
 bool operator>=(const Sharedptr<T>& lhs, const Sharedptr<T>& rhs) noexcept
-{
-    return !(lhs < rhs);
-}
+{ return !(lhs < rhs); }
 
 
 #endif /* SHAREDPTR_H_ */

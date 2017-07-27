@@ -48,6 +48,9 @@ public:
     // move version
     void push_back(T&& t)
         { data->push_back(std::move(t)); }
+    template<typename... Args>
+    void emplace_back(Args&&... args) noexcept
+        { data->emplace_back(std::forward<Args>(args)...); }
     void pop_back();
     // element access
     T& back();

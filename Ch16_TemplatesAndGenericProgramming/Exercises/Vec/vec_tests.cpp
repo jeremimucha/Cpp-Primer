@@ -21,4 +21,11 @@ int main()
     for( const string& s : vs){
         cout << s << ", ";
     }
+
+    cout << "\nTesting emplace_back:\n";
+    vs.emplace_back(4, 'A');
+    vs.emplace_back(3, 'B');
+    cout << "After vs.emplace_back(4, 'A') and vs.emplace_back(4, 'B')\n";
+    for( const string& s : vs)
+        cout << s << ", ";
 }
