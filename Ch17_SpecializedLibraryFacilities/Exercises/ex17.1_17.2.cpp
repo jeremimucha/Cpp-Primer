@@ -13,6 +13,7 @@ using std::tuple;
 using std::tuple_size;
 using std::tuple_element;
 using std::get;
+using std::make_tuple;
 using std::string;
 using std::vector;
 using std::pair;
@@ -29,11 +30,15 @@ std::ostream& operator<<(std::ostream& os, const pair<T1,T2>& p);
 int main()
 {
     tuple<int,int,int> v3i{10,20,30};
-    tuple<string, vector<string>, pair<string,int>> tup{
-        "str", vector<string>{"vector","of","strings", make_pair("str", 42)};
+    tuple<string, vector<string>, pair<string,int> > tup{
+        "str", vector<string>{"vector","of","strings"}, make_pair("str", 42)};
+    auto tup2 = make_tuple("cstring", vector<string>{"vector", "of", "strings"},
+                           make_pair("pair",42));
     cout << "v3i: " << get<0>(v3i) << ", " << get<1>(v3i) << ", " << get<2>(v3i);
     cout << endl;
     cout << "tup: " << get<0>(tup) << ", " << get<1>(tup) << ", " << get<2>(tup);
+    cout << endl;
+    cout << "tup2: " << get<0>(tup2) << ", " << get<1>(tup2) << ", " << get<2>(tup2);
 }
 
 
