@@ -22,7 +22,7 @@ smatch results;
 int main()
 {
     string line;
-    cout << "Check if the input violates the 'e before i except after c' rule. "
+    cout << "Check if the input violates the 'i before e except after c' rule. "
          << "Empty line to quit.\n";
     while(cout <<">> " && getline(cin, line) && !line.empty()){
         if(regex_search(line, results, re)){
