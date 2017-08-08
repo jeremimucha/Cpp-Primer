@@ -40,7 +40,7 @@ public:
         { }
     Uniqueptr(const Uniqueptr&) = delete;
     Uniqueptr(Uniqueptr&& u) noexcept
-        : p(std::move(u.p)), del(std::move(u.del))
+        : p(u.p), del(std::move(u.del))
         {
             u.p = nullptr; u.del = nullptr;
         }
@@ -108,8 +108,10 @@ Uniqueptr<T,Deleter>& Uniqueptr<T,Deleter>::operator=(Uniqueptr&& rhs) noexcept
         del(p);
     else
         delete p;
-    p = std::move(rhs.p);
+    p = rhs.p;
     del = std::move(rhs.del);
+    rhs.p = nullptr;
+    rhs.del = nullptr;
     return *this;
 }
 

@@ -31,7 +31,7 @@ int main()
     g(42);  // -> g(T), T = int
     g(p);   // -> g(T*), T = int*
     g(ci);  // -> g(T), T = const int
-    g(p2);  // -> g(T*), T = const int*
+    g(p2);  // -> g(T*), T = const int
     f(42);  // -> f(T), T = int
     f(p);   // -> f(T), T = int*
     f(ci);  // -> f(T), T = const int

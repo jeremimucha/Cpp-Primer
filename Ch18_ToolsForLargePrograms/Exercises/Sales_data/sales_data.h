@@ -15,7 +15,6 @@ namespace std
 }
 
 
-
 class Sales_data {
 friend std::ostream& operator<<(std::ostream&, const Sales_data&);
 friend std::istream& operator>>(std::istream&, Sales_data&);
@@ -40,6 +39,10 @@ public:
 	Sales_data& operator+=(const Sales_data&);
 	operator std::string() const { return bookNo; }
 	explicit operator double() const { return revenue; }
+
+	using PMEM = double (Sales_data::*)() const;
+	static PMEM get_pavg_price()
+		{ return &Sales_data::avg_price; }
 private:
 	double avg_price() const;  
 	std::string bookNo;
@@ -64,6 +67,14 @@ inline
 bool operator!=(const Sales_data &lhs, const Sales_data &rhs)
 {
 	return !(lhs == rhs);
+}
+
+inline double Sales_data::avg_price() const
+{
+	if (units_sold)
+		return revenue/units_sold;
+	else
+		return 0;
 }
 
 // old versions

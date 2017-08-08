@@ -2,16 +2,16 @@ CFLAGS = -O2 -Wall -Wextra -pedantic -std=c++14 -IC:/msys64/mingw64/include -LC:
 CXX = g++
 
 
-SRC = $(wildcard *.cpp)
-BINS = $(patsubst %.cpp, %.exe, $(SRC))
-OBJ = $(patsubst %.cpp, %.o, $(BINS))
-DEPS = 
+SRC = query_tests.cpp query.cpp textquery.cpp
+BINS = query_tests.exe
+OBJ = 
+DEPS = query.h textquery.h
 
 
 all: $(BINS)
 
 
-%.exe: %.cpp $(DEPS) 
+query_tests.exe: $(SRC) $(DEPS)
 	$(CXX) -o $@ $^ $(CFLAGS)
 
 

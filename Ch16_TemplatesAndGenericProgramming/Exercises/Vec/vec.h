@@ -157,8 +157,8 @@ inline void Vec<T>::reallocate()
 template<typename T>
 void Vec<T>::resize(size_type n, const T& t)
 {
-    if(n < size()){
-        for( T* newend = elements + n; first_free != newend; /**/ )
+    if(n < size()){      
+        for( T* newend = elements + n; first_free != newend; /* */ )
             alloc.destroy(--first_free);
         return;
     }

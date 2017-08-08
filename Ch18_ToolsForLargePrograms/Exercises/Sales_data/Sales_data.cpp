@@ -14,13 +14,13 @@ Sales_data::Sales_data(istream& is)
 	is >> *this; // read a transaction from is into this object
 }
 
-double Sales_data::avg_price() const
-{
-	if (units_sold)
-		return revenue/units_sold;
-	else
-		return 0;
-}
+// double Sales_data::avg_price() const
+// {
+// 	if (units_sold)
+// 		return revenue/units_sold;
+// 	else
+// 		return 0;
+// }
 
 // member binary operator: left-hand operand is bound to the implicit this pointer
 /* ------------------------------------------------------------------------- */

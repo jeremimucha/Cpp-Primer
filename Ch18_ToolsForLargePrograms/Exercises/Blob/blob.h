@@ -43,7 +43,7 @@ public:
     
     // number of elements in the Blob
     size_type size() const
-        { return data-size(); }
+        { return data->size(); }
     bool empty() const
         { return data->empty(); }
     // add and remove elements
@@ -101,7 +101,7 @@ Blob<T>::Blob(std::initializer_list<T> il)
 /* ------------------------------------------------------------------------- */
 
 template<typename T>
-void Blob<T>::check(size_type i, const std::string& msg) const
+inline void Blob<T>::check(size_type i, const std::string& msg) const
 {
     if( i >= data->size() )
         throw std::out_of_range(msg);
