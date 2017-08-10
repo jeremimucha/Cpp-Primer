@@ -29,6 +29,8 @@ class Blob
 public:
     typedef T value_type;
     typedef typename std::vector<T>::size_type size_type;
+    using iterator = BlobPtr<T>;
+    using const_iterator = ConstBlobPtr<T>;
 // constructors
     Blob();
     Blob(std::initializer_list<T> il);
@@ -39,7 +41,7 @@ public:
     
     // number of elements in the Blob
     size_type size() const
-        { return data-size(); }
+        { return data->size(); }
     bool empty() const
         { return data->empty(); }
     // add and remove elements
