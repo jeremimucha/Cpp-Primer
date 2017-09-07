@@ -3,16 +3,16 @@
         {
             "name": "Mac",
             "includePath": [
-                "/usr/include",
-                "/usr/local/include",
+                "C:/msys64/mingw64/include",
+                "C:/boost/boost_1_64_0",
                 "${workspaceRoot}"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
             "browse": {
                 "path": [
-                    "/usr/include",
-                    "/usr/local/include",
+                    "C:/msys64/mingw64/include",
+                    "C:/boost/boost_1_64_0",
                     "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
@@ -22,16 +22,16 @@
         {
             "name": "Linux",
             "includePath": [
-                "/usr/include",
-                "/usr/local/include",
+                "C:/msys64/mingw64/include",
+                "C:/boost/boost_1_64_0",
                 "${workspaceRoot}"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
             "browse": {
                 "path": [
-                    "/usr/include",
-                    "/usr/local/include",
+                    "C:/msys64/mingw64/include",
+                    "C:/boost/boost_1_64_0",
                     "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
@@ -41,29 +41,23 @@
         {
             "name": "Win32",
             "includePath": [
-                "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.10.25017/include/*",
-                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/um",
-                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/ucrt",
-                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/shared",
-                "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/winrt",
+                "C:/msys64/mingw64/include/*",
+                "C:/boost/boost_1_64_0",
                 "${workspaceRoot}"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE"
             ],
-            "intelliSenseMode": "msvc-x64",
+            "intelliSenseMode": "clang-x64",
             "browse": {
                 "path": [
-                    "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.10.25017/include/*",
-                    "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/um",
-                    "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/ucrt",
-                    "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/shared",
-                    "C:/Program Files (x86)/Windows Kits/10/Include/10.0.15063.0/winrt",
+                    "C:/msys64/mingw64/include/*",
+                    "C:/boost/boost_1_64_0",
                     "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
-                "databaseFilename": ""
+                "databaseFilename": "${workspaceRoot}/.vscode/browse.VC.db"
             }
         }
     ],
